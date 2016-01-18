@@ -11,13 +11,14 @@ CREATE TABLE jurisdictions (
 CREATE TABLE stations (
   id integer PRIMARY KEY,
   name text CONSTRAINT namechk CHECK (char_length(name) <= 255),
-  lat numeric,
-  lon numeric,
+  lat double precision,
+  lon double precision,
   dock_qty integer,
   jurisdiction_id integer REFERENCES jurisdictions (id)
   );
 
 SELECT AddGeometryColumn ('stations', 'geom', 4326, 'POINT', 2);
+
 CREATE TABLE member_types (
   id SERIAL PRIMARY KEY,
   type text
@@ -28,8 +29,8 @@ CREATE TABLE trips (
   duration integer,
   start_time TIMESTAMP,
   stop_time TIMESTAMP,
-  start_station_id integer REFERENCES stations (id),
-  stop_station_id integer REFERENCES stations (id),
+  start_id integer REFERENCES stations (id),
+  stop_id integer REFERENCES stations (id),
   bike_id integer,
   member_type_id integer REFERENCES member_types (id)
   );
