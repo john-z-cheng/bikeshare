@@ -6,10 +6,8 @@ by processing the CSV file from Capital Bikeshare (CaBi). The
 resulting output is suitable for the PostgreSQL COPY command,
 which can then be used to populate the database table.
 
-COPY trips (duration, start_time,
- stop_time, start_station_id,
- stop_station_id, bike_id,
-  member_type_id)
+COPY trips (duration, start_time, stop_time,
+ start_id, stop_id, bike_id, member_type_id)
  FROM '/home/john/github/bikeshare/data.csv';
 """
 import psycopg2
