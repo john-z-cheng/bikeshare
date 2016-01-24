@@ -28,3 +28,13 @@ from trip_pairs tp, trip_pairs rp
 where tp.start_id=rp.stop_id and tp.stop_id=rp.start_id) x
 where x.id=trip_pairs.id;
 
+DROP TABLE IF EXISTS trip_stats;
+CREATE TABLE trip_stats (
+  id SERIAL PRIMARY KEY,
+  trip_pair_id integer REFERENCES trip_pairs (id),
+  conditions text,
+  sample_size integer,
+  stat_name text,
+  stat_value double precision
+  );
+  
