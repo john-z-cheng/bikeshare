@@ -37,4 +37,21 @@ CREATE TABLE trip_stats (
   stat_name text,
   stat_value double precision
   );
+
+-- insert the counts by trip without any conditions  
+INSERT INTO trip_stats 
+(trip_pair_id, stat_name, stat_value)
+select tp.id, 'count', count(t.*)
+ from trips t, trip_pairs tp
+where t.start_id=tp.start_id 
+and t.stop_id=tp.stop_id 
+group by tp.id;
   
+-- insert the counts by trip based on member_type
+INSERT INTO trip_stats
+(trip_pair_id, conditions, stat_name, stat_value)
+select tp.id, m.type, 'count', count(t.*)
+ from trips t, trip_pairs tp, member_types m
+where t.start_id=tp.start_id 
+and t.stop_id=tp.stop_id and t.member_type_id=m.id
+group by tp.id, m.type;
