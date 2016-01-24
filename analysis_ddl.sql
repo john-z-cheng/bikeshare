@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS trip_quantity;
+DROP TABLE IF EXISTS trip_stats;
 DROP TABLE IF EXISTS trip_pairs;
 
 -- Table for start and stop station trip pairs
@@ -28,7 +30,7 @@ from trip_pairs tp, trip_pairs rp
 where tp.start_id=rp.stop_id and tp.stop_id=rp.start_id) x
 where x.id=trip_pairs.id;
 
-DROP TABLE IF EXISTS trip_stats;
+
 CREATE TABLE trip_stats (
   id SERIAL PRIMARY KEY,
   trip_pair_id integer REFERENCES trip_pairs (id),
@@ -38,19 +40,26 @@ CREATE TABLE trip_stats (
   stat_value double precision
   );
 
--- insert the counts by trip without any conditions  
-INSERT INTO trip_stats 
-(trip_pair_id, stat_name, stat_value)
-select tp.id, 'count', count(t.*)
+CREATE TABLE trip_quantity (
+  trip_pair_id integer REFERENCES trip_pairs (id),
+  member_type text,
+  quantity integer,
+  primary key (trip_pair_id, member_type)
+  );
+  
+-- insert the counts by trip for any member type  
+INSERT INTO trip_quantity
+(trip_pair_id, member_type, quantity)
+select tp.id, 'Both', count(t.*)
  from trips t, trip_pairs tp
 where t.start_id=tp.start_id 
 and t.stop_id=tp.stop_id 
 group by tp.id;
   
 -- insert the counts by trip based on member_type
-INSERT INTO trip_stats
-(trip_pair_id, conditions, stat_name, stat_value)
-select tp.id, m.type, 'count', count(t.*)
+INSERT INTO trip_quantity
+(trip_pair_id, member_type, quantity)
+select tp.id, m.type, count(t.*)
  from trips t, trip_pairs tp, member_types m
 where t.start_id=tp.start_id 
 and t.stop_id=tp.stop_id and t.member_type_id=m.id
