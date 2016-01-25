@@ -18,7 +18,14 @@ Additional tables for normalization are:
 The SQL file to create these tables is **gisddl.sql**
   
 ## Analysis Data
-The actual analysis to be done on the trip data is TBD, but generally expect to aggregate the data somehow. So a fairly flexible schema could have a table with "statistical measures" and another to hold the calculated values for a given station(s). The table with the station, the measure id, and the measure value could grow in the number of rows as new measures are calculated and inserted. Depending on how data is sliced and diced (and then presented), there may be multiple tables that are similar in structure whose contents might be aggregated over different time periods.
+The actual analysis to be done on the trip data is TBD, but generally expect to aggregate the data somehow. There will be 3 tables:
 
-The SQL file create these tables is **analysis_ddl.sql**, separate from the other SQL file because it will probably be changed much more often as I think of new analyses to be tried.
+**trip_pairs** contains the distinct start and stop stations for trips. It is based on actual trips taken. It also provides a table to store the calculation for their nominal distance.
 
+**trip_quantity** contains the number of trips taken for each pair. By querying the database and saving these values, it will help provide filtering to limit statistical calculations only on more popular trips.
+
+**trip_stats** is a table for holding various statistics. By using a column for stat_name and stat_value, it is flexible enough to hold new values without requiring a schema change.
+
+Later, depending on how data is sliced and diced (and then presented), there may be purpose-designed tables to make it easier to retrieve precalculated results.
+
+The SQL file create these tables is **analysis_ddl.sql**. In addition to DDL to create the tables, it also has DML to populate the trip_pairs ad trip_quantity tables (using INSERT ... SELECT statements).
