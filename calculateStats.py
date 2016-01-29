@@ -64,6 +64,10 @@ def calculate_stats(member_type, minimum):
       median = statistics.median(data)
       # create the execute cursor
       with conn.cursor() as eCur:
+        stmt = """DELETE FROM trip_stats WHERE trip_pair_id=%s
+          and conditions=%s"""
+        eParams = (pair_id, member_type)
+        eCur.execute(stmt, eParams)
         stmt = """INSERT INTO trip_stats 
           (trip_pair_id, sample_size, conditions,
           stat_name, stat_value) VALUES (%s, %s, %s, %s, %s)"""
